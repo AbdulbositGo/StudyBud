@@ -19,7 +19,8 @@
           </div>
         </div>
         <div class="layout__body">
-          <form class="form" action="#">
+          <form method="POST" class="form" action="">
+            {% csrf_token %}
             <div class="form__group">
               <label for="room_name">Room Name</label>
               <input id="room_name" name="room_name" type="text" placeholder="E.g. Mastering Python + Django" />

@@ -14,29 +14,31 @@
         </div>
         <div class="layout__body">
           <h2 class="auth__tagline">Find your study partner</h2>
-
-          <form class="form" action="#">
+          <form class="form" action="" method="POST">
+            {% csrf_token %}
             <div class="form__group form__group">
-              <label for="fullname">Full Name</label>
-              <input id="fullname" name="fullname" type="text" placeholder="e.g. Dennis Ivy" />
+              <label for="firstname">First Name</label>
+              <input id="firstname" name="firstname" type="text" placeholder="First name" />
             </div>
             <div class="form__group form__group">
-              <label for="room_name">Username</label>
-              <input id="username" name="username" type="text" placeholder="e.g. dennis_ivy" />
+              <label for="lastname">Last Name</label>
+              <input id="lastname" name="lastname" type="text" placeholder="Last name" />
+            </div>
+            <div class="form__group form__group">
+              <label for="username">username</label>
+              <input id="username" name="username" type="text" placeholder="Last name" />
+            </div>
+            <div class="form__group form__group">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" placeholder="email" />
+            </div>
+            <div class="form__group form__group">
+              <label for="password1">Password</label>
+              <input id="password1" name="password1" type="password" placeholder="Password" />
             </div>
             <div class="form__group">
-              <label for="password">Password</label>
-              <input id="password" name="password" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"/>
-            </div>
-
-            <div class="form__group">
-              <label for="confirm_password">Confirm Password</label>
-              <input
-                id="confirm_password"
-                name="confirm_password"
-                type="password"
-                placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
-              />
+              <label for="password2">Confirm Password</label>
+              <input id="password2" name="password2" type="password" placeholder="Confirm Password"/>
             </div>
 
             <button class="btn btn--main" type="submit">
