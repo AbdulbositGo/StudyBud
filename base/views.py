@@ -54,13 +54,8 @@ def signup(request):
             new_user.save()
 
             user = auth.authenticate(username=username, password=password1)
-            if not user:
-                auth.login(request, user)
-                return redirect(reverse("home"))
-
-            else:
-                messages.info("Bunday username tizimda mavjud emas")
-                return redirect(reverse("signup"))
+            auth.login(request, user)
+            return redirect(reverse("home"))
 
     return render(request, "signup.html")
 
@@ -72,9 +67,8 @@ def logout(request):
 
 @login_required(login_url="login")
 def home(request):
-    context = {}
-    topics = Topic.objects.all()
     q = request.GET.get("q") if request.GET.get("q") != None else ""
+    topics = Topic.objects.all()
 
     rooms = Room.objects.filter(
         Q(topic__name__icontains=q) |
@@ -82,16 +76,23 @@ def home(request):
         Q(description__icontains=q) |
         Q(user__username__icontains=q)
     )
+    room_messages = Message.objects.all().order_by("?")[:5]
 
-    context["rooms"] = rooms
-    context["topics"] = topics
+    context = {
+        "rooms": rooms,
+        "topics": topics,
+        "room_messages": room_messages,
+    }
 
     return render(request, "index.html", context)
 
 
+def topics(request):
+    return render(request, "topics.html")
+
+
 @login_required(login_url="login")
 def createRoom(request):
-
     topics = Topic.objects.all()
 
     if request.method == "POST":
@@ -103,9 +104,8 @@ def createRoom(request):
         
 
         if room_name and room_topic:
-            new_room = Room(user=user, name=room_name, topic=topic_object, description=room_desc)
-            new_room.save()
-            return redirect(f"room/{new_room.id}")
+            new_room = Room.objects.create(user=user, name=room_name, topic=topic_object, description=room_desc)
+            return redirect("room", room_id=new_room.id)
 
         return redirect("create-room")
     
@@ -120,11 +120,21 @@ def createRoom(request):
 def room(request, room_id):
     room = Room.objects.get(id=room_id)
 
-    room_messages = room.message_set.all()
+    room_messages = room.message_set.all().order_by("-created")
+    participants = room.participants.all().order_by("-date_joined")
+
+    if request.method == "POST":
+        new_message = Message.objects.create(
+            user=request.user,
+            room=room,
+            body=request.POST.get("body")
+        )
+        return redirect("room", room_id=new_message.room.id)
 
     context = {
         "room": room,
-        "room_messages": room_messages
+        "room_messages": room_messages,
+        "participants": participants
     }
 
     return render(request, "room.html", context)
@@ -142,7 +152,25 @@ def deleteRoom(request, room_id):
         return redirect("login")
     
     context = {
-        "room_obj": room_obj
+        "obj": room_obj
+    }
+
+    return render(request, "delete.html", context)
+
+
+@login_required(login_url="login")
+def deleteMessage(request, message_id):
+    message_obj = Message.objects.filter(id=message_id).first()
+
+    if (not message_obj) or (request.user != message_obj.user) :
+        return redirect("home")
+
+    if request.method == "POST":
+        message_obj.delete()
+        return redirect("room", room_id=message_obj.room.id)
+    
+    context = {
+        "obj": message_obj
     }
 
     return render(request, "delete.html", context)
