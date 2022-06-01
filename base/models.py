@@ -1,14 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User
 
 # Create your models here.
-
-
-
-
-
-
-
 
 
 class Topic(models.Model):
@@ -17,7 +10,6 @@ class Topic(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-
     def __str__(self):
         return self.name
 
@@ -25,7 +17,7 @@ class Topic(models.Model):
 class Room(models.Model):
 
     class Meta:
-        ordering = ["created", "updated"]
+        ordering = ["-created", "-updated"]
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
@@ -35,13 +27,8 @@ class Room(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-
     def __str__(self):
         return self.name
-
-    
-
-
 
 
 class Message(models.Model):
@@ -52,8 +39,5 @@ class Message(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-
     def __str__(self):
         return self.body[:50]
-
-

@@ -1,14 +1,17 @@
+from multiprocessing import context
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, auth
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
 from django.db.models import Q
-from pydoc_data import topics
 from .models import *
 
 
-def signin(request):
+def login(request):
+
+    if request.user.is_authenticated:
+        return redirect("home")
 
     if request.method == "POST":
         username = request.POST.get("username")
@@ -21,9 +24,9 @@ def signin(request):
             return redirect("home")
 
         else:
-            return redirect("signin")
+            return redirect("login")
 
-    return render(request, "signin.html")
+    return render(request, "login.html")
 
 
 def signup(request):
@@ -64,53 +67,94 @@ def signup(request):
 
 def logout(request):
     auth.logout(request)
-    return redirect("signin")
+    return redirect("login")
 
 
-login_required(login_url="signin")
+@login_required(login_url="login")
 def home(request):
     context = {}
     topics = Topic.objects.all()
     q = request.GET.get("q") if request.GET.get("q") != None else ""
 
-    rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(
-        name__icontains=q) | Q(description__icontains=q))
+    rooms = Room.objects.filter(
+        Q(topic__name__icontains=q) |
+        Q(name__icontains=q) |
+        Q(description__icontains=q) |
+        Q(user__username__icontains=q)
+    )
+
     context["rooms"] = rooms
     context["topics"] = topics
 
     return render(request, "index.html", context)
 
 
-login_required(login_url="signin")
+@login_required(login_url="login")
 def createRoom(request):
 
-    return render(request, "create-room.html")
+    topics = Topic.objects.all()
+
+    if request.method == "POST":
+        room_name = request.POST.get("room_name")
+        room_topic = request.POST.get("room_topic")
+        room_desc = request.POST.get("room_desc")
+        user = request.user
+        topic_object = Topic.objects.get(name=room_topic)
+        
+
+        if room_name and room_topic:
+            new_room = Room(user=user, name=room_name, topic=topic_object, description=room_desc)
+            new_room.save()
+            return redirect(f"room/{new_room.id}")
+
+        return redirect("create-room")
+    
+    context = {
+        "topics": topics
+    }
+
+    return render(request, "create-room.html", context)
 
 
-login_required(login_url="signin")
+@login_required(login_url="login")
 def room(request, room_id):
     room = Room.objects.get(id=room_id)
 
+    room_messages = room.message_set.all()
+
     context = {
-        "room": room
+        "room": room,
+        "room_messages": room_messages
     }
 
     return render(request, "room.html", context)
 
 
-login_required(login_url="signin")
-def deleteRoom(request):
-    return render(request, "delete.html")
+@login_required(login_url="login")
+def deleteRoom(request, room_id):
+    room_obj = Room.objects.filter(id=room_id).first()
+
+    if (not room_obj) or (request.user != room_obj.user) :
+        return redirect("home")
+
+    if request.method == "POST":
+        room_obj.delete()
+        return redirect("login")
+    
+    context = {
+        "room_obj": room_obj
+    }
+
+    return render(request, "delete.html", context)
 
 
-login_required(login_url="signin")
+@login_required(login_url="login")
 def profile(request):
     return render(request, "profile.html")
 
 
-login_required(login_url="signin")
+@login_required(login_url="login")
 def updateProfile(request):
     return render(request, "edit-user.html")
 
-    auth.logout(request)
-    return redirect("signin")
+    
