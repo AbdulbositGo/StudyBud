@@ -32,16 +32,9 @@
         </label>
       </form>
       <nav class="header__menu">
-        <!-- Not Logged In -->
-        <!-- <a href="/login.html">
-          <img src="./assets/avatar.svg" />
-          <p>Login</p>
-        </a> -->
-
-        <!-- Logged In -->
 
         <div class="header__user">
-          <a href="profile.html">
+          <a href="{% url 'profile' request.user.username %}">
             <div class="avatar avatar--medium active">
               <img src="https://randomuser.me/api/portraits/men/37.jpg" />
             </div>

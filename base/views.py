@@ -1,4 +1,3 @@
-from multiprocessing import context
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, auth
 from django.shortcuts import render, redirect
@@ -76,7 +75,7 @@ def home(request):
         Q(description__icontains=q) |
         Q(user__username__icontains=q)
     )
-    room_messages = Message.objects.all().order_by("?")[:5]
+    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q)).order_by("?")[:5]
 
     context = {
         "rooms": rooms,
@@ -177,8 +176,20 @@ def deleteMessage(request, message_id):
 
 
 @login_required(login_url="login")
-def profile(request):
-    return render(request, "profile.html")
+def profile(request, username):
+    user_obj = User.objects.get(username=username)
+    topics = Topic.objects.all()
+    room_messages = user_obj.message_set.all()
+    rooms = user_obj.room_set.all()
+
+    context = {
+        "user_obj": user_obj,
+        "topics": topics,
+        "rooms": rooms,
+        "room_messages": room_messages,
+
+    }
+    return render(request, "profile.html", context)
 
 
 @login_required(login_url="login")
