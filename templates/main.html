@@ -32,7 +32,7 @@
         </label>
       </form>
       <nav class="header__menu">
-        {% if request.user.is_authenticsted %}
+        {% if request.user.is_authenticated %}
           <div class="header__user">
             <a href="{% url 'profile' request.user.username %}">
               <div class="avatar avatar--medium active">
@@ -73,8 +73,8 @@
           </div>
         {% else %}
         <div class="header__user">
-          <a hre="{% url 'login' %}">Login</a> or 
-          <a hre="{% url 'signup' %}">Signup</a>
+          <a href="{% url 'login' %}">Login</a> or 
+          <a href="{% url 'signup' %}">Signup</a>
         </div>
         {% endif %}
       </nav>

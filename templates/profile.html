@@ -13,33 +13,33 @@
         <div class="profile">
           <div class="profile__avatar">
             <div class="avatar avatar--large active">
-              <img src="https://randomuser.me/api/portraits/men/11.jpg" />
+              <img src="{{ profile_obj.profileimg.url }}" />
             </div>
           </div>
           <div class="profile__info">
-            <h3>{{ user_obj.first_name }}</h3>
-            <p>@{{ user_obj.username }}</p>
-            <a href="edit-user.html" class="btn btn--main btn--pill">Edit Profile</a>
+            <h3>{{ profile_obj.first_name }}</h3>
+            <p>@{{ profile_obj.username }}</p>
+            {% if request.user == profile_obj.user %}
+              <a href="{% url 'update-profile' profile_obj.username %}" class="btn btn--main btn--pill">Edit Profile</a>
+            {% endif %}
           </div>
           <div class="profile__about">
             <h3>About</h3>
             <p>
-              {{ user_obj.bio }}
+              {{ profile_obj.about }}
             </p>
           </div>
         </div>
 
         <div class="roomList__header">
           <div>
-            <h2>Study Rooms Hosted by dennis_ivy</a>
+            <h2>Study Rooms Hosted by {{ profile_obj.username }}</a>
             </h2>
           </div>
         </div>
         {% include "room-list.html" %}
       </div>
-      <!-- Room List End -->
-
-      <!-- Activities Start -->
+      
       {% include "recent-activities.html" %}
       <!-- Activities End -->
     </div>

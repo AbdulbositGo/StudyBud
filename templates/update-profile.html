@@ -1,0 +1,73 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+
+{% block main %}
+
+  <main class="update-account layout">
+      <div class="container">
+          <div class="layout__box">
+              <div class="layout__boxHeader">
+                  <div class="layout__boxTitle">
+                      <a href="{% url "profile" profile_obj.username %}">
+                          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                              viewBox="0 0 32 32">
+                              <title>arrow-left</title>
+                              <path
+                                  d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+                              </path>
+                          </svg>
+                      </a>
+                      <h3>Edit your profile</h3>
+                  </div>
+              </div>
+              <div class="layout__body">
+                  <form method="POST" class="form" action="" enctype="multipart/form-data">
+                      {% csrf_token %}
+                        <div class="profile__avatar">
+                            <div class="avatar avatar--large active">
+                               <img src="{{ profile_obj.profileimg.url }}" />
+                            </div>
+                        </div>
+                        <div class="form__group">
+                          <label for="profileimg">Avatar</label>
+                          <input id="profileimg" name="profileimg" type="file" />
+                        </div>
+
+                        <div class="form__group">
+                            <label for="firstname">First name</label>
+                            <input id="firstname" value="{{ profile_obj.firstname }}" name="firstname" type="text" placeholder="E.g. John doe" />
+                        </div>
+
+                        <div class="form__group">
+                            <label for="lastname">Last name</label>
+                            <input id="lastname" value="{{ profile_obj.lastname }}" name="lastname" type="text" placeholder="E.g. John doe" />
+                        </div>
+
+                        <div class="form__group">
+                            <label for="username">Username</label>
+                            <input id="username" value="{{ profile_obj.username }}" readonly name="username" type="text" placeholder="E.g. John doe" />
+                        </div>
+
+                        <div class="form__group">
+                            <label for="email">Email</label>
+                            <input id="email" value="{{ profile_obj.email }}" readonly name="email" type="text" placeholder="E.g. john@email.com" />
+                        </div>
+
+                        <div class="form__group">
+                          <label for="about">About</label>
+                          <textarea name="about" id="about" placeholder="Write about yourself...">{{ profile_obj.about }}</textarea>
+                        </div>
+                        <div class="form__action">
+                          <a class="btn btn--dark" href="{% url 'home' %}">Cancel</a>
+                          <button class="btn btn--main" type="submit">Update</button>
+                        </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+    </div>
+  </main>
+
+{% endblock main %}

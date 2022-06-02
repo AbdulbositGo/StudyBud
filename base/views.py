@@ -43,7 +43,7 @@ def signup(request):
             messages.info("username allaqachon band")
 
         else:
-            new_user = User.objects.create(
+            new_user = User.objects.create_user(
                 first_name=firstname,
                 last_name=lastname,
                 username=username,
@@ -121,7 +121,6 @@ def room(request, room_id):
 
     room_messages = room.message_set.all().order_by("-created")
     participants = room.participants.all().order_by("-date_joined")
-
     if request.method == "POST":
         new_message = Message.objects.create(
             user=request.user,
@@ -177,13 +176,14 @@ def deleteMessage(request, message_id):
 
 @login_required(login_url="login")
 def profile(request, username):
-    user_obj = User.objects.get(username=username)
+    user_obj = User.objects.filter(username=username).first()
+    profile_obj = Profile.objects.filter(user=user_obj).first()
     topics = Topic.objects.all()
     room_messages = user_obj.message_set.all()
     rooms = user_obj.room_set.all()
 
     context = {
-        "user_obj": user_obj,
+        "profile_obj": profile_obj,
         "topics": topics,
         "rooms": rooms,
         "room_messages": room_messages,
@@ -193,7 +193,38 @@ def profile(request, username):
 
 
 @login_required(login_url="login")
-def updateProfile(request):
-    return render(request, "edit-user.html")
+def updateProfile(request, username):
+    user_obj = User.objects.filter(username=username).first()
+    profile_obj = Profile.objects.filter(user=user_obj).first()
+
+    if request.user != user_obj or not profile_obj:
+        return redirect("profile", username=user_obj.username)
+
+    if request.method == "POST":
+        firstname = request.POST.get("firstname")
+        lastname = request.POST.get("lastname")
+        profileimg = request.FILES.get("profileimg")
+        about = request.POST.get("about")
+
+        user_obj.first_name = firstname
+        user_obj.last_name = lastname
+        user_obj.save()
+
+        profile_obj.firstname = firstname
+        profile_obj.lastname = lastname
+        profile_obj.about = about
+        if profileimg:
+            print("rasm bor")
+            profile_obj.profileimg = profileimg
+        else:
+            print("rasm yo'q")
+        profile_obj.save()
+        return redirect("profile", username=user_obj.username)
+
+    context = {
+        "profile_obj": profile_obj
+    }
+
+    return render(request, "update-profile.html", context)
 
     
