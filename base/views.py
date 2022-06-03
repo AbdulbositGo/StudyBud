@@ -37,10 +37,10 @@ def signup(request):
         password1 = request.POST.get("password1")
         password2 = request.POST.get("password2")
         if password1 != password2:
-            messages.info("Parollar bir xil emas")
+            messages.info(request, "Parollar bir xil emas")
             return redirect(reverse("signup"))
         elif User.objects.filter(email=email).first():
-            messages.info("username allaqachon band")
+            messages.info(request, "username allaqachon band")
 
         else:
             new_user = User.objects.create_user(
@@ -197,7 +197,7 @@ def deleteMessage(request, message_id):
 def profile(request, username):
     user_obj = User.objects.filter(username=username).first()
     profile_obj = Profile.objects.filter(user=user_obj).first()
-    topics = Topic.objects.all()
+    topics = Topic.objects.all()[:5]
     room_messages = user_obj.message_set.all()
     rooms = user_obj.room_set.all()
 

@@ -1,3 +1,4 @@
+from email.policy import default
 from turtle import mode
 from django.db import models
 from django.contrib.auth.models import User
@@ -51,7 +52,7 @@ class Profile(models.Model):
     firstname = models.CharField(max_length=150)
     lastname = models.CharField(max_length=150)
     email = models.EmailField(max_length=255)
-    profileimg = models.ImageField(upload_to="profile-images")
+    profileimg = models.ImageField(upload_to="profile-images", default="no-image-user.jpg")
     about = models.TextField()
 
     created = models.DateTimeField(auto_now_add=True)
