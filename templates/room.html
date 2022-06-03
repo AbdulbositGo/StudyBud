@@ -21,7 +21,7 @@
           </div>
           {% if request.user == room.user %}
             <div class="room__topRight">
-              <a href="#">
+              {% comment %} <a href="#">
                 <svg
                   enable-background="new 0 0 24 24"
                   height="32"
@@ -45,7 +45,7 @@
                     </g>
                   </g>
                 </svg>
-              </a>
+              </a> {% endcomment %}
               <a href="{% url 'delete-room' room.id %}">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                   <title>remove</title>

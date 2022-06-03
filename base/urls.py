@@ -13,5 +13,5 @@ urlpatterns = [
     path("delete-room/<room_id>", deleteRoom, name="delete-room"),
     path("delete-message/<message_id>", deleteMessage, name="delete-message"),
     path("profile/<str:username>", profile, name="profile"),
-    path("update-profile/<str:username>", updateProfile, name="update-profile")
+    path("update-profile/<str:username>", updateProfile, name="update-profile"),
 ]

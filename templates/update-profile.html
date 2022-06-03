@@ -22,17 +22,30 @@
                       <h3>Edit your profile</h3>
                   </div>
               </div>
+
+
+              <div class="settings__avatar">
+                <div class="avatar avatar--large active">
+                  <img src="{{ profile_obj.profileimg.url }}" id="preview-avatar" />
+                </div>
+              </div>
+                
+
               <div class="layout__body">
-                  <form method="POST" class="form" action="" enctype="multipart/form-data">
+                    <form method="POST" class="form" action="" enctype="multipart/form-data">
                       {% csrf_token %}
-                        <div class="profile__avatar">
-                            <div class="avatar avatar--large active">
-                               <img src="{{ profile_obj.profileimg.url }}" />
-                            </div>
-                        </div>
-                        <div class="form__group">
-                          <label for="profileimg">Avatar</label>
-                          <input id="profileimg" name="profileimg" type="file" />
+
+
+                        <div class="form__group form__avatar">
+                            <label for="avatar">Upload Avatar</label>
+                            <input
+                            class="form__hide"
+                            required
+                            type="file"
+                            name="profileimg"
+                            id="avatar"
+                            accept="image/png, image/gif, image/jpeg"
+                            />
                         </div>
 
                         <div class="form__group">

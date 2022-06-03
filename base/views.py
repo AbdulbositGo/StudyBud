@@ -52,9 +52,19 @@ def signup(request):
             )
             new_user.save()
 
+            new_profile = Profile.objects.create(
+                user=new_user,
+                firstname=firstname,
+                lastname = lastname,
+                username=new_user.username,
+                email=email,
+
+
+            )
+
             user = auth.authenticate(username=username, password=password1)
             auth.login(request, user)
-            return redirect(reverse("home"))
+            return redirect(reverse("profile", username=new_user.username))
 
     return render(request, "signup.html")
 
@@ -87,7 +97,13 @@ def home(request):
 
 
 def topics(request):
-    return render(request, "topics.html")
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    topics = Topic.objects.filter(name__icontains=q)
+    context = {
+        "topics": topics
+    }
+
+    return render(request, "topics.html", context)
 
 
 @login_required(login_url="login")
@@ -104,6 +120,7 @@ def createRoom(request):
 
         if room_name and room_topic:
             new_room = Room.objects.create(user=user, name=room_name, topic=topic_object, description=room_desc)
+            new_room.participants.add(request.user)
             return redirect("room", room_id=new_room.id)
 
         return redirect("create-room")
@@ -121,12 +138,14 @@ def room(request, room_id):
 
     room_messages = room.message_set.all().order_by("-created")
     participants = room.participants.all().order_by("-date_joined")
+
     if request.method == "POST":
         new_message = Message.objects.create(
             user=request.user,
             room=room,
             body=request.POST.get("body")
         )
+        room.participants.add(request.user)
         return redirect("room", room_id=new_message.room.id)
 
     context = {
