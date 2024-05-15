@@ -84,7 +84,7 @@
               <p>Hosted By</p>
               <a href="{% url 'profile' room.user.username %}" class="room__author">
                 <div class="avatar avatar--small">
-                  <img src="https://randomuser.me/api/portraits/men/37.jpg" />
+                  <img src="{{ room.user.profile.profileimg.url }}" />
                 </div>
                 <span>@{{ room.user.username }}</span>
               </a>
@@ -101,7 +101,7 @@
                     <div class="thread__author">
                       <a href="{% url 'profile' room.user.username %}" class="thread__authorInfo">
                         <div class="avatar avatar--small">
-                          <img src="https://randomuser.me/api/portraits/men/37.jpg" />
+                          <img src="{{ room_message.user.profile.profileimg.url }}" />
                         </div>
                         <span>@{{ room_message.user.username }}</span>
                       </a>
@@ -141,9 +141,9 @@
         <h3 class="participants__top">Participants <span>({{ participants.count }} Joined)</span></h3>
         <div class="participants__list scroll">
           {% for user in participants %}
-            <a href="{% url 'profile' room.user.username %}" class="participant">
+            <a href="{% url 'profile' user.username %}" class="participant">
               <div class="avatar avatar--medium">
-                <img src="https://randomuser.me/api/portraits/men/37.jpg" />
+                <img src="{{ user.profile.profileimg.url }}" />
               </div>
               <p>
                 {{ user.first_name }}

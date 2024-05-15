@@ -7,7 +7,7 @@
         <div class="activities__boxHeader roomListRoom__header">
           <a href="{% url 'profile' message.user.username %}" class="roomListRoom__author">
             <div class="avatar avatar--small">
-              <img src="{{ message.user.profile_set.first.profileimg.url }}" />
+              <img src="{{ message.user.profile.profileimg.url }}" />
             </div>
             <p>
               @{{message.user.username}}

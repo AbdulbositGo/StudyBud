@@ -1,5 +1,3 @@
-from email.policy import default
-from turtle import mode
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -47,7 +45,7 @@ class Message(models.Model):
         return self.body[:50]
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     username = models.CharField(max_length=150)
     firstname = models.CharField(max_length=150)
     lastname = models.CharField(max_length=150)
