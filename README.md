@@ -5,6 +5,6 @@
      Windows: ./env/bin/activate
 3. run this command to install all requirements:
     pip install -r requirements.txt
-4. Make migrations an migrate
+4. Make migrations and migrate
 5. Run Server using This command
      pythn manage.py runserver 
