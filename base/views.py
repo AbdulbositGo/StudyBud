@@ -247,7 +247,7 @@ def updateProfile(request, username):
 
     
 def createSuperUser(request):
-    if User.objects.filter(is_admin=True).exists():
+    if User.objects.filter(is_superuser=True).exists():
         return redirect('/')
     User.objects.create_superuser('admin', 'admin@gmail.com', '1')
     return HttpResponse("Supper user successfully created")
