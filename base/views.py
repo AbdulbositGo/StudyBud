@@ -52,19 +52,17 @@ def signup(request):
             )
             new_user.save()
 
-            new_profile = Profile.objects.create(
+            Profile.objects.create(
                 user=new_user,
                 firstname=firstname,
                 lastname = lastname,
                 username=new_user.username,
                 email=email,
-
-
             )
 
             user = auth.authenticate(username=username, password=password1)
             auth.login(request, user)
-            return redirect(reverse("profile", username=new_user.username))
+            return redirect(reverse("profile", kwargs={"username":new_user.username}))
 
     return render(request, "signup.html")
 
