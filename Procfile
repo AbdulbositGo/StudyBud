@@ -1,1 +1,1 @@
-web: gunicorn studybud.wsgi --log-file -
+web: python manage.py migrate && gunicorn studybud.wsg
